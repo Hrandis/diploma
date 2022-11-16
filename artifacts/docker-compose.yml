@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:12-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: pdb
+      POSTGRES_USER: hrandis
+      POSTGRES_PASSWORD: hrandispass
+  mysql:
+    image: mysql:latest
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=mdb
+      - MYSQL_USER=hrandis
+      - MYSQL_PASSWORD=hrandispass
