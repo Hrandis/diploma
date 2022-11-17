@@ -11,17 +11,21 @@ import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.open;
 
+//GUI Card Number field tests
 public class CardNumberFieldTests {
     PurchaseAndLoanPage purchasePage;
+
     @BeforeEach
+    //open tour page and press purchase button
     public void preps() {
         open("http://localhost:8080");
         MainPage mainPage = new MainPage();
-        purchasePage = mainPage.directPurchase(); //нажать кнопку "купить"
+        purchasePage = mainPage.directPurchase();
     }
 
     @Test
-    void shouldWarnAboutShortCardNumber (){
+    //checking field length limit sending short card number
+    void shouldWarnAboutShortCardNumber() {
         purchasePage.fillEmptyFields(
                 DataHelper.getInvalidShortCard().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -36,8 +40,10 @@ public class CardNumberFieldTests {
         purchasePage.getOwnerField().ancestor("span").sibling(0).shouldNot(Condition.exist);
         purchasePage.getCodeField().ancestor("span").sibling(0).shouldNot(Condition.exist);
     }
+
     @Test
-    void shouldCutExtraDigits (){
+    //checking field length limit sending long card number
+    void shouldCutExtraDigits() {
         purchasePage.fillEmptyFields(
                 DataHelper.getLongCard().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -47,8 +53,10 @@ public class CardNumberFieldTests {
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
+
     @Test
-    void shouldEnterSpaces (){
+    //checking field can fix format and enter spaces
+    void shouldEnterSpaces() {
         purchasePage.fillEmptyFields(
                 DataHelper.getCard1Number().getCardNumber().trim(),
                 DataHelper.getValidMonth().getMonth(),
@@ -58,8 +66,10 @@ public class CardNumberFieldTests {
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
+
     @Test
-    void shouldWarnAboutEmptyField (){
+    //checking warning for empty field case
+    void shouldWarnAboutEmptyField() {
         purchasePage.fillEmptyFieldsExceptCardNumber(
                 DataHelper.getValidMonth().getMonth(),
                 DataHelper.getValidYear().getYear(),
@@ -68,9 +78,16 @@ public class CardNumberFieldTests {
         purchasePage.getCardNumberField().shouldBe(Condition.empty);
         purchasePage.getCardNumberField().ancestor("span").sibling(0).shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
+        //page should hide warning after fixing wrong value
+        purchasePage.fixCardNumber(DataHelper.getCard1Number().getCardNumber());
+        purchasePage.getCardNumberField().ancestor("span").sibling(0).shouldNot(Condition.exist);
+        purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
+                .shouldHave(Condition.text("Операция одобрена Банком."));
     }
+
     @Test
-    void shouldNotEnterChars (){
+        //checking field doesn't accept chars
+    void shouldNotEnterChars() {
         purchasePage.fillEmptyFields(
                 DataHelper.getInvalidCardChars().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -79,20 +96,6 @@ public class CardNumberFieldTests {
                 DataHelper.getValidCode().getCode());
         purchasePage.getCardNumberField().shouldBe(Condition.empty);
         purchasePage.getCardNumberField().ancestor("span").sibling(0).shouldBe(Condition.exist)
-              .shouldHave(Condition.text("Поле обязательно для заполнения"));
-    }
-
-    @Test
-    void shouldClearWarningAfterFixingValue (){
-        purchasePage.fillEmptyFields(
-                DataHelper.getInvalidCardChars().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
-        purchasePage.fixCardNumber(DataHelper.getCard1Number().getCardNumber());
-        purchasePage.getCardNumberField().ancestor("span").sibling(0).shouldNot(Condition.exist);
-        purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
-                .shouldHave(Condition.text("Операция одобрена Банком."));
+                .shouldHave(Condition.text("Поле обязательно для заполнения"));
     }
 }

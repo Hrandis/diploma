@@ -8,21 +8,24 @@ import ru.netology.Queries;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
+
 import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.open;
 
 public class MySQLPurchaseTests {
     PurchaseAndLoanPage purchasePage;
 
     @BeforeEach
+    //open tour page and press purchase button
     public void preps() {
         open("http://localhost:8080");
         MainPage mainPage = new MainPage();
-        purchasePage = mainPage.directPurchase(); //нажать кнопку "купить"
-        //TODO сделать подключение к mySQL
+        purchasePage = mainPage.directPurchase();
     }
 
     @Test
+    //system should approve purchase for Card 1
     void shouldApprovePurchaseWithCard1() {
         purchasePage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -34,6 +37,7 @@ public class MySQLPurchaseTests {
     }
 
     @Test
+    //system should deny purchase for Card 2
     void shouldDenyPurchaseForCard2() {
         purchasePage.fillEmptyFields(DataHelper.getCard2Number().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -45,6 +49,7 @@ public class MySQLPurchaseTests {
     }
 
     @Test
+    //system should deny purchase for any other card
     void shouldDenyPurchaseForCardNotFromList() {
         purchasePage.fillEmptyFields(DataHelper.getInvalidCardNotInList().getCardNumber(),
                 DataHelper.getValidMonth().getMonth(),
@@ -56,8 +61,9 @@ public class MySQLPurchaseTests {
     }
 
     @AfterAll
-    static void query(){
+    //asking MYSQL for requests data
+    static void query() {
         Queries queries = new Queries();
-        queries.mySQLLoanInfo();
+        queries.mySQLPurchaseInfo();
     }
 }
