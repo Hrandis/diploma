@@ -24,6 +24,7 @@ public class YearFieldTests {
     }
 
     @Test
+    //checking field doesn't accept earlier year
     void shouldWarnAboutWrongEarlierYear() {
         purchasePage.fillEmptyFields(
                 DataHelper.getCard1Number().getCardNumber(),
@@ -41,6 +42,7 @@ public class YearFieldTests {
     }
 
     @Test
+        //checking field doesn't accept much later year
     void shouldWarnAboutWrongLaterYear() {
         purchasePage.fillEmptyFields(
                 DataHelper.getCard1Number().getCardNumber(),

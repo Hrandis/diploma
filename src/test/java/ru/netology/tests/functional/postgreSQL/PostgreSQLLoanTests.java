@@ -2,7 +2,7 @@ package ru.netology.tests.functional.postgreSQL;
 
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.*;
-import ru.netology.Queries;
+import ru.netology.additional.Queries;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -11,6 +11,7 @@ import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.open;
 
+//Loan requests tests
 public class PostgreSQLLoanTests {
     PurchaseAndLoanPage loanPage;
 
