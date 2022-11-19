@@ -5,6 +5,7 @@ HELP.md
 build/
 node_modules/
 баги/
+.bak
 
 ### STS ###
 .apt_generated
