@@ -4,6 +4,7 @@ HELP.md
 .gradle
 build/
 node_modules/
+баги/
 
 ### STS ###
 .apt_generated
