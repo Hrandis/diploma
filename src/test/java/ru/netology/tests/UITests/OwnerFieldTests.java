@@ -32,13 +32,13 @@ public class OwnerFieldTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getInvalidOwnerDigits().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldBe(Condition.exist)
+        purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей")); //the exact phrase is unknown
         //checking there is no other warnings
-        purchasePage.getCardNumberField().ancestor("span").sibling(0).shouldNot(Condition.exist);
-        purchasePage.getYearField().ancestor("span").sibling(0).shouldNot(Condition.exist);
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldNot(Condition.exist);
-        purchasePage.getCodeField().ancestor("span").sibling(0).shouldNot(Condition.exist);
+        purchasePage.getCardNumberFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getYearFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);
     }
 
     @Test
@@ -50,8 +50,13 @@ public class OwnerFieldTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getInvalidOwnerCyrillic().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldBe(Condition.exist)
+        purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей"));
+        //checking there is no other warnings
+        purchasePage.getCardNumberFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getYearFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);
     }
 
     @Test
@@ -63,8 +68,13 @@ public class OwnerFieldTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getInvalidOwnerSpecialSymbols().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldBe(Condition.exist)
+        purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей"));
+        //checking there is no other warnings
+        purchasePage.getCardNumberFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getYearFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);
     }
 
     @Test
@@ -91,11 +101,27 @@ public class OwnerFieldTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidCode().getCode());
         purchasePage.getOwnerField().shouldBe(Condition.empty);
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldBe(Condition.exist)
+        purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
+        //checking there is no other warnings
+        purchasePage.getCardNumberFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getYearFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
+        purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);
+    }
+
+    @Test
         //page should hide warning after fixing wrong value
+    void shouldClearWarningAfterFixingValue() {
+        purchasePage.fillEmptyFieldsExceptOwner(
+                DataHelper.getCard1Number().getCardNumber(),
+                DataHelper.getValidMonth().getMonth(),
+                DataHelper.getValidYear().getYear(),
+                DataHelper.getValidCode().getCode());
+        purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist);
+        //fixing value
         purchasePage.fixOwner(DataHelper.getValidOwner().getOwner());
-        purchasePage.getOwnerField().ancestor("span").sibling(0).shouldNot(Condition.exist);
+        purchasePage.getOwnerFieldWarn().shouldNot(Condition.exist);
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }

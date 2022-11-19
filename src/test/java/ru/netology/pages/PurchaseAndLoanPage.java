@@ -19,6 +19,11 @@ public class PurchaseAndLoanPage {
     SelenideElement continueButton = $(byText("Продолжить"));
     SelenideElement notificationOk = $(".notification_status_ok");
     SelenideElement notificationError = $(".notification_status_error");
+    SelenideElement cardNumberFieldWarn = $("[placeholder=\"0000 0000 0000 0000\"]").ancestor("span").sibling(0);
+    SelenideElement monthFieldWarn = $("[placeholder=\"08\"]").ancestor("span").sibling(0);
+    SelenideElement yearFieldWarn = $("[placeholder=\"22\"]").ancestor("span").sibling(0);
+    SelenideElement ownerFieldWarn = $("[placeholder=\"999\"]").ancestor("span", 4).preceding(0).lastChild().sibling(2);
+    SelenideElement codeFieldWarn = $("[placeholder=\"999\"]").ancestor("span").sibling(0);
 
     //fill all empty fields
     public void fillEmptyFields(String cardNumber, String month, String year, String owner, String code) {
