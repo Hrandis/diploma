@@ -33,7 +33,7 @@ public class MySQLPurchaseTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
 
@@ -45,7 +45,7 @@ public class MySQLPurchaseTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        purchasePage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 
@@ -57,7 +57,7 @@ public class MySQLPurchaseTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        purchasePage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 

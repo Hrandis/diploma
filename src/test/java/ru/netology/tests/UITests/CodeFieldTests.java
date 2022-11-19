@@ -98,8 +98,7 @@ public class CodeFieldTests {
                 DataHelper.getValidMonth().getMonth(),
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner());
-        purchasePage.getCodeFieldWarn().shouldBe(Condition.exist)
-                .shouldHave(Condition.text("Поле обязательно для заполнения"));
+        purchasePage.getCodeFieldWarn().shouldBe(Condition.exist);
         //page should hide warning after fixing wrong value
         purchasePage.fixCode(DataHelper.getValidCode().getCode());
         purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);

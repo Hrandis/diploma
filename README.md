@@ -18,15 +18,17 @@
 * убедиться, что симулятор запущен (в логах видим "starting `node app.js`" и список карт).
 
 3. запустить приложение aqa-shop.jar с подключением к postgreSQL:
+* в файле application.properties закомментировать строку для mySQL, раскомментировать - для postgreSQL (ctrl + /);
 * открыть новый терминал IDEA;
 * убедиться, что вы в нужной папке \artifacts (чтобы перейти, ввести команду "cd .\artifacts\" в терминале IDEA);
-* ввести команду "java -jar aqa-shop.jar --spring.config.location=./postgreSQL.properties";
+* ввести команду "java -jar aqa-shop.jar";
 * убедиться, что приложение запущено (в логах в терминале видим "Started ShopApplication", приложение запускается на http://localhost:8080/).
 
 4. запустить приложение aqa-shop.jar с подключением к mySQL:
+5. * в файле application.properties закомментировать строку для postgreSQL, раскомментировать - для mySQL (ctrl + /);
 * открыть новый терминал IDEA;
 * убедиться, что вы в нужной папке \artifacts (чтобы перейти, ввести команду "cd .\artifacts\" в терминале IDEA);
-* ввести команду "java -jar aqa-shop.jar --spring.config.location=./mySQL.properties";
+* ввести команду "java -jar aqa-shop.jar";
 * убедиться, что приложение запущено (в логах в терминале видим "Started ShopApplication", приложение запускается на http://localhost:8080/).
 
 # Для запуска тестов:

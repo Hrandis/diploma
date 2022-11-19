@@ -31,7 +31,7 @@ public class MySQLLoanTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        loanPage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        loanPage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
 
@@ -43,7 +43,7 @@ public class MySQLLoanTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 
@@ -55,7 +55,7 @@ public class MySQLLoanTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(10))
+        loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 

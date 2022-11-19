@@ -111,8 +111,7 @@ public class MonthFieldTests {
                 DataHelper.getValidYear().getYear(),
                 DataHelper.getValidOwner().getOwner(),
                 DataHelper.getValidCode().getCode());
-        purchasePage.getMonthFieldWarn().shouldBe(Condition.exist)
-                .shouldHave(Condition.text("Поле обязательно для заполнения"));
+        purchasePage.getMonthFieldWarn().shouldBe(Condition.exist);
         //fixing value
         purchasePage.fixMonth(DataHelper.getValidMonth().getMonth());
         purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
