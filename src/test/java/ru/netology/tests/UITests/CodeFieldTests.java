@@ -3,6 +3,7 @@ package ru.netology.tests.UITests;
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.data.CardInfo;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -26,12 +27,12 @@ public class CodeFieldTests {
     @Test
         //checking field length limit sending short code
     void shouldWarnAboutShortCode() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getInvalidTwoDigitsCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(2)));
         purchasePage.getCodeFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Неверный формат"));
         //checking there is no other warnings
@@ -44,12 +45,12 @@ public class CodeFieldTests {
     @Test
         //checking field length limit
     void shouldCutExtraDigits() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getMultipleDigitsCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(4)));
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
@@ -57,12 +58,12 @@ public class CodeFieldTests {
     @Test
         //checking field doesn't accept chars
     void shouldNotEnterChars() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getInvalidCodeChars().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getInvalidValueChars()));
         purchasePage.getCodeFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
         //checking there is no other warnings
@@ -75,11 +76,12 @@ public class CodeFieldTests {
     @Test
         //checking warning for empty field case
     void shouldWarnAboutEmptyField() {
-        purchasePage.fillEmptyFieldsExceptCode(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                null));
         purchasePage.getCodeField().shouldBe(Condition.empty);
         purchasePage.getCodeFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -93,14 +95,15 @@ public class CodeFieldTests {
     @Test
         //page should hide warning after fixing wrong value
     void shouldClearWarningAfterFixingValue() {
-        purchasePage.fillEmptyFieldsExceptCode(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                null));
         purchasePage.getCodeFieldWarn().shouldBe(Condition.exist);
         //page should hide warning after fixing wrong value
-        purchasePage.fixCode(DataHelper.getValidCode().getCode());
+        purchasePage.fix(DataHelper.getValueDigits(3), purchasePage.getCodeField());
         purchasePage.getCodeFieldWarn().shouldNot(Condition.exist);
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));

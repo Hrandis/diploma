@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import lombok.Value;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import ru.netology.data.CardInfo;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -24,6 +25,23 @@ public class PurchaseAndLoanPage {
     SelenideElement yearFieldWarn = $("[placeholder=\"22\"]").ancestor("span").sibling(0);
     SelenideElement ownerFieldWarn = $("[placeholder=\"999\"]").ancestor("span", 4).preceding(0).lastChild().sibling(2);
     SelenideElement codeFieldWarn = $("[placeholder=\"999\"]").ancestor("span").sibling(0);
+
+    //fill all empty fields
+    public void fill(CardInfo cardInfo) {
+        cardNumberField.setValue(cardInfo.getCardNumber());
+        monthField.setValue(cardInfo.getMonth());
+        yearField.setValue(cardInfo.getYear());
+        ownerField.setValue(cardInfo.getOwner());
+        codeField.setValue(cardInfo.getCode());
+        continueButton.click();
+    }
+    //fill only one field and press the Continue button
+    public void fix(String correctValue, SelenideElement element) {
+        element.sendKeys(Keys.CONTROL, "A");
+        element.sendKeys(Keys.BACK_SPACE);
+        element.setValue(correctValue);
+        continueButton.click();
+    }
 
     //fill all empty fields
     public void fillEmptyFields(String cardNumber, String month, String year, String owner, String code) {

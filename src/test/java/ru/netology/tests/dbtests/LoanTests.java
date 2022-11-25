@@ -1,8 +1,9 @@
-package ru.netology.tests.functional.postgreSQL;
+package ru.netology.tests.dbtests;
 
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.*;
-import ru.netology.additional.Queries;
+import ru.netology.additional.SQLQueries;
+import ru.netology.data.CardInfo;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -12,7 +13,7 @@ import java.time.Duration;
 import static com.codeborne.selenide.Selenide.open;
 
 //Loan requests tests
-public class PostgreSQLLoanTests {
+public class LoanTests {
     PurchaseAndLoanPage loanPage;
 
     @BeforeEach
@@ -24,45 +25,45 @@ public class PostgreSQLLoanTests {
     }
 
     @Test
-    //system should approve loan for Card 1
+        //system should approve loan for Card 1
     void shouldApproveLoanWithCard1() {
-        loanPage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        loanPage.fill(new CardInfo(DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         loanPage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
 
     @Test
-    //system should deny loan for Card 2
+        //system should deny loan for Card 2
     void shouldDenyLoanForCard2() {
-        loanPage.fillEmptyFields(DataHelper.getCard2Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        loanPage.fill(new CardInfo(DataHelper.getCard2Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 
     @Test
-    //system should deny loan for any other card
+        //system should deny loan for any other card
     void shouldDenyLoanForCardNotFromList() {
-        loanPage.fillEmptyFields(DataHelper.getInvalidCardNotInList().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        loanPage.fill(new CardInfo(DataHelper.getInvalidCardNotInList(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         loanPage.getNotificationError().shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Ошибка! Банк отказал в проведении операции."));
     }
 
     @AfterAll
-    //asking PostgreSQL for requests data
+    //asking MYSQL for requests data
     static void query() {
-        Queries queries = new Queries();
-        queries.postgreSQLLoanInfo();
+        SQLQueries queries = new SQLQueries();
+        queries.RequestInfo();
     }
 }

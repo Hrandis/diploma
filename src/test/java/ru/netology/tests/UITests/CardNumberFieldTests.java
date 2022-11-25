@@ -3,6 +3,7 @@ package ru.netology.tests.UITests;
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.data.CardInfo;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -26,12 +27,11 @@ public class CardNumberFieldTests {
     @Test
         //checking field length limit sending short card number
     void shouldWarnAboutShortCardNumber() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getInvalidShortCard().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getInvalidShortCard(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getCardNumberFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Неверный формат"));
         //checking there is no other warnings
@@ -44,12 +44,11 @@ public class CardNumberFieldTests {
     @Test
         //checking field length limit sending long card number
     void shouldCutExtraDigits() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getLongCard().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getLongCard(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
@@ -57,12 +56,11 @@ public class CardNumberFieldTests {
     @Test
         //checking field can fix format and enter spaces
     void shouldEnterSpaces() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber().trim(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number().trim(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
@@ -70,11 +68,11 @@ public class CardNumberFieldTests {
     @Test
         //checking warning for empty field case
     void shouldWarnAboutEmptyField() {
-        purchasePage.fillEmptyFieldsExceptCardNumber(
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(null,
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getCardNumberField().shouldBe(Condition.empty);
         purchasePage.getCardNumberFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -88,12 +86,11 @@ public class CardNumberFieldTests {
     @Test
         //checking field doesn't accept chars
     void shouldNotEnterChars() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getInvalidCardChars().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getInvalidValueChars(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getCardNumberField().shouldBe(Condition.empty);
         purchasePage.getCardNumberFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -107,16 +104,15 @@ public class CardNumberFieldTests {
     @Test
         //page should hide warning after fixing wrong value
     void shouldClearWarningAfterFixingValue() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getInvalidShortCard().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getInvalidShortCard(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getCardNumberFieldWarn().shouldBe(Condition.exist);
         //fixing value
-        purchasePage.fixCardNumber(DataHelper.getCard1Number().getCardNumber());
-        purchasePage.getCardNumberFieldWarn().shouldBe(Condition.exist);
+        purchasePage.fix(DataHelper.getCard1Number(), purchasePage.getCardNumberField());
+        purchasePage.getCardNumberFieldWarn().shouldNotBe(Condition.exist);
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }

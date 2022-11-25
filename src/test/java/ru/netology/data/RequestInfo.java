@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 //class for SQL result set converting
-public class PurchaseInfo {
-    private int amount;
+public class RequestInfo {
     private String created;
     private String status;
 }

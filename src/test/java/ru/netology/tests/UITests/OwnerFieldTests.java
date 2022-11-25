@@ -3,6 +3,7 @@ package ru.netology.tests.UITests;
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.data.CardInfo;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -26,12 +27,12 @@ public class OwnerFieldTests {
     @Test
         //checking field doesn't accept digits
     void shouldWarnAboutDigits() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getInvalidOwnerDigits().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getValueDigits(10),
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей")); //the exact phrase is unknown
         //checking there is no other warnings
@@ -44,12 +45,12 @@ public class OwnerFieldTests {
     @Test
         //checking field doesn't accept cyrillic
     void shouldWarnAboutCyrillic() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getInvalidOwnerCyrillic().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("ru"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей"));
         //checking there is no other warnings
@@ -62,12 +63,12 @@ public class OwnerFieldTests {
     @Test
         //checking field doesn't accept special symbols
     void shouldWarnAboutSpecialSymbols() {
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getInvalidOwnerSpecialSymbols().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                DataHelper.getInvalidOwnerSpecialSymbols(),
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Введите имя владельца латиницей"));
         //checking there is no other warnings
@@ -80,13 +81,13 @@ public class OwnerFieldTests {
     @Test
         //checking field length limit; no more than 27 symbols are allowed by standards
     void shouldCutExtraChars() {
-        String owner = DataHelper.getOwner27Chars().getOwner();
-        purchasePage.fillEmptyFields(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
+        String owner = DataHelper.getOwner27Chars();
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
                 owner + "extra",
-                DataHelper.getValidCode().getCode());
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerField().shouldHave(Condition.exactValue(owner));
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
@@ -95,11 +96,12 @@ public class OwnerFieldTests {
     @Test
         //checking warning for empty field case
     void shouldWarnAboutEmptyField() {
-        purchasePage.fillEmptyFieldsExceptOwner(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                null,
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerField().shouldBe(Condition.empty);
         purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -113,14 +115,15 @@ public class OwnerFieldTests {
     @Test
         //page should hide warning after fixing wrong value
     void shouldClearWarningAfterFixingValue() {
-        purchasePage.fillEmptyFieldsExceptOwner(
-                DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(
+                DataHelper.getCard1Number(),
+                DataHelper.getMonth(0),
+                DataHelper.getYear(1),
+                null,
+                DataHelper.getValueDigits(3)));
         purchasePage.getOwnerFieldWarn().shouldBe(Condition.exist);
         //fixing value
-        purchasePage.fixOwner(DataHelper.getValidOwner().getOwner());
+        purchasePage.fix(DataHelper.getOwner("en"), purchasePage.getOwnerField());
         purchasePage.getOwnerFieldWarn().shouldNot(Condition.exist);
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));

@@ -3,6 +3,7 @@ package ru.netology.tests.UITests;
 import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.data.CardInfo;
 import ru.netology.data.DataHelper;
 import ru.netology.pages.MainPage;
 import ru.netology.pages.PurchaseAndLoanPage;
@@ -26,11 +27,11 @@ public class MonthFieldTests {
     @Test
         //should accept only month from 01 to 12
     void shouldWarnAboutWrongMonth() {
-        purchasePage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getInvalidMultipleDigitsMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                DataHelper.getMonth(50),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getMonthFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Неверно указан срок действия карты"));
         //checking there is no other warnings
@@ -43,23 +44,23 @@ public class MonthFieldTests {
     @Test
         //checking field length limit
     void shouldCutExtraDigits() {
-        purchasePage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getExtraDigitsMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                DataHelper.getMonth(0) + DataHelper.getValueDigits(1),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));
     }
 
     @Test
         //checking field length limit sending short month
-    void shouldWarnAboutShortMonth() {
-        purchasePage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getInvalidOneDigitMonth().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+    void shouldWarnAboutShortMonth() {;
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                DataHelper.getValueDigits(1),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getMonthFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Неверный формат"));
         //checking there is no other warnings
@@ -72,10 +73,11 @@ public class MonthFieldTests {
     @Test
         //checking warning for empty field case
     void shouldWarnAboutEmptyField() {
-        purchasePage.fillEmptyFieldsExceptMonth(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                null,
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getMonthField().shouldBe(Condition.empty);
         purchasePage.getMonthFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -89,11 +91,11 @@ public class MonthFieldTests {
     @Test
         //checking field doesn't accept chars
     void shouldNotEnterChars() {
-        purchasePage.fillEmptyFields(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getInvalidMonthChars().getMonth(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                DataHelper.getInvalidValueChars(),
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getMonthField().shouldBe(Condition.empty);
         purchasePage.getMonthFieldWarn().shouldBe(Condition.exist)
                 .shouldHave(Condition.text("Поле обязательно для заполнения"));
@@ -107,13 +109,14 @@ public class MonthFieldTests {
     @Test
         //page should hide warning after fixing wrong value
     void shouldClearWarningAfterFixingValue() {
-        purchasePage.fillEmptyFieldsExceptMonth(DataHelper.getCard1Number().getCardNumber(),
-                DataHelper.getValidYear().getYear(),
-                DataHelper.getValidOwner().getOwner(),
-                DataHelper.getValidCode().getCode());
+        purchasePage.fill(new CardInfo(DataHelper.getCard1Number(),
+                null,
+                DataHelper.getYear(1),
+                DataHelper.getOwner("en"),
+                DataHelper.getValueDigits(3)));
         purchasePage.getMonthFieldWarn().shouldBe(Condition.exist);
         //fixing value
-        purchasePage.fixMonth(DataHelper.getValidMonth().getMonth());
+        purchasePage.fix(DataHelper.getMonth(0), purchasePage.getMonthField());
         purchasePage.getMonthFieldWarn().shouldNot(Condition.exist);
         purchasePage.getNotificationOk().shouldBe(Condition.visible, Duration.ofSeconds(10))
                 .shouldHave(Condition.text("Операция одобрена Банком."));

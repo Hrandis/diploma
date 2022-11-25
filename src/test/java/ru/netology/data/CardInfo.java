@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-//class for SQL result set converting
-public class LoanInfo {
-    private String created;
-    private String status;
+public class CardInfo {
+    private String cardNumber;
+    private String month;
+    private String year;
+    private String owner;
+    private String code;
 }
